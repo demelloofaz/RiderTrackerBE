@@ -13154,11 +13154,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\David\\CoderCamps\\BackEnd\\FP0_3\\SouthChandlerCycling\\SouthChandlerCycling\\SouthChandlerCycling.csproj",
+      "projectUniqueName": "C:\\Users\\David\\CoderCamps\\FinalProject\\RiderTrackerBE\\SouthChandlerCycling\\SouthChandlerCycling\\SouthChandlerCycling.csproj",
       "projectName": "SouthChandlerCycling",
-      "projectPath": "C:\\Users\\David\\CoderCamps\\BackEnd\\FP0_3\\SouthChandlerCycling\\SouthChandlerCycling\\SouthChandlerCycling.csproj",
+      "projectPath": "C:\\Users\\David\\CoderCamps\\FinalProject\\RiderTrackerBE\\SouthChandlerCycling\\SouthChandlerCycling\\SouthChandlerCycling.csproj",
       "packagesPath": "C:\\Users\\David\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\David\\CoderCamps\\BackEnd\\FP0_3\\SouthChandlerCycling\\SouthChandlerCycling\\obj\\",
+      "outputPath": "C:\\Users\\David\\CoderCamps\\FinalProject\\RiderTrackerBE\\SouthChandlerCycling\\SouthChandlerCycling\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
