@@ -1,0 +1,11 @@
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\bin\Debug\netcoreapp2.0\SouthChandlerCycling.deps.json
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\bin\Debug\netcoreapp2.0\SouthChandlerCycling.runtimeconfig.json
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\bin\Debug\netcoreapp2.0\SouthChandlerCycling.runtimeconfig.dev.json
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\bin\Debug\netcoreapp2.0\SouthChandlerCycling.dll
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\bin\Debug\netcoreapp2.0\SouthChandlerCycling.pdb
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\obj\Debug\netcoreapp2.0\SouthChandlerCycling.csprojResolveAssemblyReference.cache
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\obj\Debug\netcoreapp2.0\SouthChandlerCycling.csproj.CoreCompileInputs.cache
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\obj\Debug\netcoreapp2.0\SouthChandlerCycling.AssemblyInfoInputs.cache
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\obj\Debug\netcoreapp2.0\SouthChandlerCycling.AssemblyInfo.cs
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\obj\Debug\netcoreapp2.0\SouthChandlerCycling.dll
+C:\Users\David\CoderCamps\BackEnd\FP0_3\SouthChandlerCycling\SouthChandlerCycling\obj\Debug\netcoreapp2.0\SouthChandlerCycling.pdb

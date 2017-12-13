@@ -1,0 +1,30 @@
+﻿@model IEnumerable<SouthChandlerCycling.Models.SCCRidesGroup>
+
+@{
+    ViewData["Title"] = "South Chandler Ride Statistics";
+}
+
+<h2>South Chandler Ride Statistics</h2>
+
+<table>
+    <tr>
+        <th>
+            Ride Date
+        </th>
+        <th>
+            Riders Signed up
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @item.RiderCount
+            </td>
+        </tr>
+    }
+</table>

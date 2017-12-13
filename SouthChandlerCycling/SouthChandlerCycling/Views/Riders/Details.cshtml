@@ -1,0 +1,106 @@
+﻿@model SouthChandlerCycling.Models.Rider
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Rider</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <!--
+        <dt>
+            @Html.DisplayNameFor(model => model.LastLongitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastLongitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastLatitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastLatitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Salt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Salt)
+        </dd>
+        -->
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EmailAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EmailAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Role)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Role)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Signups)
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Ride</th>
+                    <th>Date</th>
+                    <th>Distance</th>
+                </tr>
+                @foreach (var item in Model.Signups)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ActualRide.RideName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ActualRide.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ActualRide.Distance)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
