@@ -51,6 +51,8 @@ namespace SouthChandlerCycling.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("ActiveRide");
+
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -67,6 +69,8 @@ namespace SouthChandlerCycling.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<long>("LastRide");
 
                     b.Property<string>("Password");
 

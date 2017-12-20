@@ -9,10 +9,14 @@ namespace SouthChandlerCycling.Models
 {
     public class Rider : User
     {
+        public int ActiveRide { get; set; }
+        [Display(Name = "Last Ride")]
+        public long LastRide { get; set; }
         [Display(Name = "Longitude")]
         public string LastLongitude { get; set; }
         [Display(Name = "Latitude")]
         public string LastLatitude { get; set; }
+
 
         //public ICollection<Bicycle> bicycles { get; set; }
         public ICollection<Signup> Signups { get; set; }

@@ -78,6 +78,35 @@ namespace SouthChandlerCycling.Controllers
             return View(await PaginatedList<Ride>.CreateAsync(rides.AsNoTracking(), page ?? 1, pageSize));
 
         }
+        public IEnumerable<Ride> GetAllRides( RidesRequestData RequestData)
+        {
+            if (!IsAuthorizedRider(RequestData))
+            {
+                return null;
+            }
+            return _context.Rides.ToList();
+        }
+        // Secure Details Request...
+        public Ride GetRide(RidesRequestData RequestData)
+        {
+            Ride Result = new Ride();
+            Result.ID = -1;
+
+            if (!IsAuthorizedRider(RequestData))
+            {
+                return Result;
+            }
+
+            // Use the defualt Detials method...
+            // return await Details(RequestData.TargetId);
+            if (RequestData.RideId > 0)
+            {
+                Ride ride = _context.Rides.SingleOrDefault<Ride>(r => r.ID == RequestData.RideId);
+                if (ride != null)
+                    Result = ride;
+            }
+            return Result;
+        }
 
         // GET: Rides/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -121,7 +150,26 @@ namespace SouthChandlerCycling.Controllers
             }
             return View(ride);
         }
+                [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateRide(RidesRequestData RequestData)
+        {
+            if (!IsAuthorizedAdmin(RequestData))
+                return Unauthorized();
 
+            if (ModelState.IsValid)
+            {
+                Ride ride = new Ride();
+                ride.RideName = RequestData.RideName;
+                ride.Description = RequestData.Description;
+                ride.Distance = RequestData.Distance;
+                ride.StartDate = RequestData.RideStart;
+                _context.Add(ride);
+                await _context.SaveChangesAsync();
+                return Accepted();
+            }
+            return Unauthorized();
+        }
         // GET: Rides/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -136,6 +184,37 @@ namespace SouthChandlerCycling.Controllers
                 return NotFound();
             }
             return View(ride);
+        }
+
+        // GET: Rides/Edit/5
+        public async Task<IActionResult> EditRide(RidesRequestData RequestData)
+        {
+            if (!IsAuthorizedAdmin(RequestData))
+                return Unauthorized();
+
+            Ride ride = await _context.Rides.SingleOrDefaultAsync(m => m.ID == RequestData.RideId);
+
+            if (ride == null)
+            {
+                return NotFound();
+            }
+
+            if (RequestData.RideName != null)
+                ride.RideName = RequestData.RideName;
+
+            if (RequestData.Description != null)
+                ride.Description = RequestData.Description;
+
+            if (RequestData.RideStart != null)
+                ride.StartDate = RequestData.RideStart;
+
+            if (RequestData.Distance !=  -1)
+                ride.Distance = RequestData.Distance;
+
+            _context.Rides.Update(ride);
+            _context.SaveChanges();
+
+            return Accepted();
         }
 
         // POST: Rides/Edit/5
@@ -253,6 +332,28 @@ namespace SouthChandlerCycling.Controllers
                 return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
             }
         }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteRide(RidesRequestData RequestData)
+        {
+            if (!IsAuthorizedAdmin(RequestData))
+            {
+                return Unauthorized();
+            }
+
+            var ride = await _context.Rides.SingleOrDefaultAsync(m => m.ID == RequestData.RideId);
+
+            if (ride == null)
+            {
+                return NotFound();
+            }
+
+            // Do the delete...
+            _context.Rides.Remove(ride);
+            await _context.SaveChangesAsync();
+            //return RedirectToAction(nameof(Index));
+            return Accepted();
+        }
         /*
         public async Task<IActionResult> Delete(int? id)
         {
@@ -285,6 +386,46 @@ namespace SouthChandlerCycling.Controllers
         private bool RideExists(int id)
         {
             return _context.Rides.Any(e => e.ID == id);
+        }
+
+        private bool RiderExists(long id)
+        {
+            return _context.Riders.Any(e => e.ID == id);
+        }
+
+        public bool IsAuthorizedRider(RidesRequestData RequestData)
+        {
+            bool result = false;
+            if (RiderExists(RequestData.RiderId))
+            {
+                if (Auth.IsValidToken(RequestData.Authorization))
+                {
+                    var foundRider = _context.Riders.SingleOrDefaultAsync(m => m.ID == RequestData.RiderId && RequestData.Authorization == Auth.GenerateJWT(m));
+                    if (foundRider != null)
+                    {
+                        result = true;
+                    }
+                }
+            }
+            return result;
+        }
+        public bool IsAuthorizedAdmin(RidesRequestData RequestData)
+        {
+            bool result = false;
+            if (RiderExists(RequestData.RiderId))
+            {
+                if (Auth.IsValidToken(RequestData.Authorization))
+                {
+                    var foundRider = _context.Riders.SingleOrDefaultAsync(m => m.ID == RequestData.RiderId &&
+                    m.Role == "Admin" &&
+                    RequestData.Authorization == Auth.GenerateJWT(m));
+                    if (foundRider != null)
+                    {
+                        result = true;
+                    }
+                }
+            }
+            return result;
         }
     }
 }
