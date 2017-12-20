@@ -23,20 +23,20 @@ namespace SouthChandlerCycling.Data
             string DefaultPassword = Auth.Hash("Password", DefaultSalt);
             // add data!!!
             var riders = new Rider[] {
-            new Rider{FirstName ="The", LastName="Admin", PhoneNumber="(480) 555-1212", EmailAddress="none@msn.com", UserName="Admin", Role="Admin", Salt = AdminSalt, Password = AdminPassword },
+            new Rider{FirstName ="The", LastName="Admin", PhoneNumber="(480) 555-1212", EmailAddress="none@msn.com", UserName="Admin", Role="Admin", Salt = AdminSalt, Password = AdminPassword, ActiveRide = -1, LastRide = -1 },
 
             new Rider{FirstName ="David", LastName="Mello", PhoneNumber="(480) 313-3875", EmailAddress="DavidMelloofaz@gmail.com",UserName="DavidMelloOfAz", Role="Admin",
-            Salt = AdminSalt, Password = AdminPassword},
+            Salt = AdminSalt, Password = AdminPassword, ActiveRide = -1, LastRide = -1},
 
-            new Rider{FirstName ="Rich", LastName="Linde", PhoneNumber="(303) 330-5757", EmailAddress="RichLinde@gmail.com",UserName="BigTex", Role="User", Salt = DefaultSalt, Password = DefaultPassword  },
+            new Rider{FirstName ="Rich", LastName="Linde", PhoneNumber="(303) 330-5757", EmailAddress="RichLinde@gmail.com",UserName="BigTex", Role="User", Salt = DefaultSalt, Password = DefaultPassword, ActiveRide = -1, LastRide = -1  },
 
-            new Rider{FirstName ="Ron", LastName="Sprague", PhoneNumber="(480) 555-1234", EmailAddress="RonSprague@gmail.com",UserName="CaptainRon", Role="User", Salt = DefaultSalt, Password = DefaultPassword},
+            new Rider{FirstName ="Ron", LastName="Sprague", PhoneNumber="(480) 555-1234", EmailAddress="RonSprague@gmail.com",UserName="CaptainRon", Role="User", Salt = DefaultSalt, Password = DefaultPassword, ActiveRide = -1, LastRide = -1},
 
-            new Rider{FirstName ="Damien", LastName="Smith", PhoneNumber="(469) 964-3424", EmailAddress="DamiemSmith@gmail.com",UserName="Damien", Role="User", Salt = DefaultSalt, Password = DefaultPassword  },
+            new Rider{FirstName ="Damien", LastName="Smith", PhoneNumber="(469) 964-3424", EmailAddress="DamiemSmith@gmail.com",UserName="Damien", Role="User", Salt = DefaultSalt, Password = DefaultPassword, ActiveRide = -1, LastRide = -1  },
 
-            new Rider{FirstName ="Steve", LastName="Van Cott", PhoneNumber="(480) 555-6789", EmailAddress="BigSteve@gmail.com",UserName="BigSteve", Role="User", Salt = DefaultSalt, Password = DefaultPassword  },
+            new Rider{FirstName ="Steve", LastName="Van Cott", PhoneNumber="(480) 555-6789", EmailAddress="BigSteve@gmail.com",UserName="BigSteve", Role="User", Salt = DefaultSalt, Password = DefaultPassword, ActiveRide = -1, LastRide = -1  },
 
-             new Rider{FirstName ="Steve", LastName="Zimmerman", PhoneNumber="(480) 555-8989", EmailAddress="SteveZ@gmail.com",UserName="LittleSteve", Role="User", Salt = DefaultSalt, Password = DefaultPassword  }};
+             new Rider{FirstName ="Steve", LastName="Zimmerman", PhoneNumber="(480) 555-8989", EmailAddress="SteveZ@gmail.com",UserName="LittleSteve", Role="User", Salt = DefaultSalt, Password = DefaultPassword, ActiveRide = -1, LastRide = -1  }};
 
             foreach (Rider r in riders)
             {
