@@ -351,7 +351,7 @@ namespace SouthChandlerCycling.Controllers
             return NotFound();
             
         }
-        public async Task<IActionResult> ActivateRide(RiderRequestData RequestData)
+        private async Task<IActionResult> SetActiveRide(RiderRequestData RequestData)
         {
             if (!_service.IsAuthorizedRider(RequestData))
             {
@@ -380,34 +380,15 @@ namespace SouthChandlerCycling.Controllers
             return NotFound();
 
         }
+
+        public async Task<IActionResult> ActivateRide(RiderRequestData RequestData)
+        {
+            return await SetActiveRide(RequestData);
+        }
         public async Task<IActionResult> DeactivateRide(RiderRequestData RequestData)
         {
-            if (!_service.IsAuthorizedRider(RequestData))
-            {
-                return Unauthorized();
-            }
-
-            var riderToUpdate = await _context.Riders.SingleOrDefaultAsync(r => r.ID == RequestData.RequestingId);
-
-            if (await TryUpdateModelAsync<Rider>(
-                riderToUpdate,
-                "",
-                 r => -1))
-            {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return Accepted();
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
-            }
-            return NotFound();
+            RequestData.ActiveRide = 0;
+            return await SetActiveRide(RequestData);
         }
 
         public IActionResult GetActiveRide(RiderRequestData RequestData)
