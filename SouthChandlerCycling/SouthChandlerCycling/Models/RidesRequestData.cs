@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SouthChandlerCycling.Models
+{
+    public class RidesRequestData
+    {
+        public int RiderId { get; set; }
+        public int RideId { get; set; }
+        public string Authorization { get; set; }
+        public string RideName { get; set; }
+        public string Description { get; set; }
+        public DateTime RideStart { get; set; }
+        public double Distance { get; set; }
+    }
+}
