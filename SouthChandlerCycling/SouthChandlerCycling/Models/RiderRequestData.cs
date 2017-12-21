@@ -10,5 +10,6 @@ namespace SouthChandlerCycling.Models
         public int RequestingId { get; set; }
         public string Authorization { get; set; }
         public int TargetId { get; set; }
+        public int ActiveRide { get; set; }
     }
 }
