@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+//using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SouthChandlerCycling.Data;
 using SouthChandlerCycling.Models;
+using SouthChandlerCycling.Services;
 
 namespace SouthChandlerCycling.Controllers
 {
@@ -14,11 +15,14 @@ namespace SouthChandlerCycling.Controllers
     {
        
         private readonly SCCDataContext _context;
+        private RiderService _service;
 
-        public RidersController(SCCDataContext context)
+        public RidersController(SCCDataContext context, RiderService service)
         {
             _context = context;
+            _service = service;
         }
+
 
         // GET: Riders
         public async Task<IActionResult> Index(
@@ -70,15 +74,16 @@ namespace SouthChandlerCycling.Controllers
             return View(await PaginatedList<Rider>.CreateAsync(riders.AsNoTracking(), page ?? 1, pageSize));
         }
         // GET: All Riders Requires Authorization and a 
-        public IEnumerable<Rider> GetRiders(RiderRequestData RequestData)
+        
+        [HttpGet]
+        public IActionResult GetRiders(RiderRequestData RequestData)
         {
-            if (!IsAuthorizedRider(RequestData))
+            if (!_service.IsAuthorizedRider(RequestData))
             {
-                return null;
+                return Unauthorized();
             }
-            return _context.Riders.ToList();
+            return Ok(_context.Riders.ToList());
         }
-
         // GET: Riders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -100,30 +105,18 @@ namespace SouthChandlerCycling.Controllers
         }
 
         // Secure Details Request...
-        public Rider GetRider(RiderRequestData RequestData)
+        public IActionResult GetRider(RiderRequestData RequestData)
         {
-            Rider Result = new Rider
+            if (!_service.IsAuthorizedRider(RequestData))
             {
-                ID = -1
-            };
-
-            if (!IsAuthorizedRider(RequestData))
-            {
-                return Result;
+                return Unauthorized();
             }
 
-            // Use the defualt Detials method...
-            // return await Details(RequestData.TargetId);
-            if (RequestData.TargetId > 0)
-            {
-                Rider rider = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
-                if (rider != null)
-                {
-                    Result = rider;
-                }
+            Rider rider = _service.GetRider(RequestData);
+            if (rider != null)
+                return Ok(rider);
 
-            }
-            return Result;
+            return NotFound() ;
         }
 
 
@@ -143,14 +136,7 @@ namespace SouthChandlerCycling.Controllers
             try {
                 if (ModelState.IsValid)
                 {
-                    rider.Salt = Auth.GenerateSalt();
-                    rider.Password = Auth.Hash(rider.Password, rider.Salt);
-                    rider.LastLatitude = "";
-                    rider.LastLongitude = "";
-                    rider.ActiveRide = -1;
-                    rider.Role = "User";
-                    _context.Add(rider);
-                    await _context.SaveChangesAsync();
+                    _service.AddRider(rider);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -165,34 +151,18 @@ namespace SouthChandlerCycling.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public AuthorizationResponseData CreateRider([Bind("Password,LastName,FirstName,UserName,PhoneNumber,EmailAddress")] Rider rider)
+        public IActionResult CreateRider([FromBody] Rider rider)
         {
-            AuthorizationResponseData ResponseData = new AuthorizationResponseData
-            {
-                UserId = -1,
-                Authorization = "Unauthorized"
-            };
-
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (UserNameExists(rider.UserName))
-                        return ResponseData;
-                    rider.Salt = Auth.GenerateSalt();
-                    rider.Password = Auth.Hash(rider.Password, rider.Salt);
-                    rider.LastLatitude = "";
-                    rider.LastLongitude = "";
-                    rider.ActiveRide = -1;
-                    rider.LastRide = -1;
-                    rider.Role = "User";
-                    _context.Add(rider);
-                    _context.SaveChangesAsync();
+                    if (_service.UserNameExists(rider.UserName))
+                        return Unauthorized();
 
-                    ResponseData.UserId = rider.ID;
-                    ResponseData.Authorization =  Auth.GenerateJWT(rider);
-                    return ResponseData;
+                    // A valid new rider to be added
+                    AuthorizationResponseData ResponseData = _service.AddRiderWAuthorization(rider);
+                    return Ok(ResponseData);
                 }
             }
             catch (DbUpdateException /* ex */)
@@ -202,52 +172,39 @@ namespace SouthChandlerCycling.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-            return ResponseData;
+            return BadRequest("Unable to save changes. Try again.");
         }
 
         [HttpPost]
-        public AuthorizationResponseData Login([FromBody] User user)
+        public IActionResult Login([FromBody] User user)
         {
-            AuthorizationResponseData ResponseData = new AuthorizationResponseData
-            {
-                UserId = -1,
-                Authorization = "Unauthorized"
-            };
             User foundUser = _context.Riders.SingleOrDefault<Rider>(
                 r => r.UserName == user.UserName && r.Password == Auth.Hash(user.Password, r.Salt)
                 );
             if (foundUser != null)
             {
+                AuthorizationResponseData ResponseData = new AuthorizationResponseData();
                 ResponseData.UserId = foundUser.ID;
                 ResponseData.Authorization = Auth.GenerateJWT(foundUser);
+                return Ok(ResponseData);
             }
    
-            return ResponseData;
+            return NotFound();
         }
 
         [HttpPost]
-        public AuthorizationResponseData ChangePassword([FromBody] Rider rider)
+        public IActionResult ChangePassword([FromBody] Rider rider)
         {
-            AuthorizationResponseData ResponseData = new AuthorizationResponseData
-            {
-                UserId = -1,
-                Authorization = "Unauthorized"
-            };
-
             Rider foundRider = _context.Riders.SingleOrDefault<Rider>(
                 r => r.UserName == rider.UserName && r.ID == rider.ID );
 
             if (foundRider != null)
             {
-                foundRider.Password = Auth.Hash(rider.Password, foundRider.Salt);
-                _context.Riders.Update(foundRider);
-                _context.SaveChanges();
-
-                ResponseData.UserId = foundRider.ID;
-                ResponseData.Authorization = Auth.GenerateJWT(foundRider);
+                AuthorizationResponseData ResponseData = _service.UpdatePassword(foundRider, rider.Password);
+                return Ok(ResponseData);
             }
 
-            return ResponseData;
+            return NotFound();
         }
 
         // GET: Riders/Edit/5
@@ -298,17 +255,16 @@ namespace SouthChandlerCycling.Controllers
             }
             return View(riderToUpdate);
         }
-        [HttpPost, ActionName("Edit")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditRider(RiderRequestData RequestData)
+        [HttpPost]
+        public async Task<IActionResult> EditRider( [FromBody] RiderRequestData RequestData)
         {
 
             if (RequestData.RequestingId == RequestData.TargetId)
             {
-                if (!IsAuthorizedRider(RequestData))
+                if (!_service.IsAuthorizedRider(RequestData))
                     return Unauthorized();
             }
-            else if (!IsAuthorizedAdmin(RequestData))
+            else if (!_service.IsAuthorizedAdmin(RequestData))
             {
                 return Unauthorized();
             }
@@ -336,11 +292,10 @@ namespace SouthChandlerCycling.Controllers
             return NotFound();
         }
 
-        [HttpPost, ActionName("Edit")]
-        [ValidateAntiForgeryToken]
+        [HttpPost]
         public async  Task<IActionResult> UpdateRiderPosition([FromBody] RiderLocation LocationData)
         {
-            if (!IsAuthorizedRider(LocationData))
+            if (!_service.IsAuthorizedRider(LocationData.RiderId, LocationData.Authorization))
             { 
                     return Unauthorized();
             }
@@ -350,11 +305,7 @@ namespace SouthChandlerCycling.Controllers
             {
                 if (riderToUpdate != null)
                 {
-                    riderToUpdate.LastLatitude = LocationData.Latitude;
-                    riderToUpdate.LastLongitude = LocationData.Longitude;
-                    riderToUpdate.ActiveRide = LocationData.RideId;
-                    _context.Riders.Update(riderToUpdate);
-                    _context.SaveChanges();
+                    _service.UpdateRiderPosition(riderToUpdate, LocationData);
                 }
             }
 
@@ -369,46 +320,109 @@ namespace SouthChandlerCycling.Controllers
             return Accepted();
         }
         [HttpGet]
-        [ValidateAntiForgeryToken]
-        public RiderLocation GetRiderLocation(RiderRequestData RequestData)
+        public IActionResult GetRiderPosition(RiderRequestData RequestData)
         {
-            RiderLocation LocationData = new RiderLocation
-            {
-                RiderId = -1,
-                Authorization = "",
-                Latitude = "",
-                Longitude = ""
-        };
+ 
 
             if (RequestData.RequestingId == RequestData.TargetId)
             {
-                if (!IsAuthorizedRider(RequestData))
+                if (!_service.IsAuthorizedRider(RequestData))
                 {
-                    return LocationData;
+                    return Unauthorized();
                 }
             }
             else
             {
-               if (IsAuthorizedAdmin(RequestData))
+               if (_service.IsAuthorizedAdmin(RequestData))
                 {
-                    return LocationData;
+                    return Unauthorized();
                 }
             }
 
-            var riderToGet = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
+            Rider riderToGet = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
 
             if (riderToGet != null)
             {
-                LocationData.RiderId = riderToGet.ID;
-                LocationData.Longitude = riderToGet.LastLongitude;
-                LocationData.Longitude = riderToGet.LastLatitude;
-                LocationData.RideId = riderToGet.ActiveRide;
+                RiderLocation LocationData = _service.GetRiderLocation(riderToGet);
+                return Ok(LocationData);
+
             }
 
-            return LocationData;
+            return NotFound();
             
         }
-      
+        public async Task<IActionResult> ActivateRide(RiderRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+            var riderToUpdate = await _context.Riders.SingleOrDefaultAsync(r => r.ID == RequestData.RequestingId);
+
+            if (await TryUpdateModelAsync<Rider>(
+                riderToUpdate,
+                "",
+                 r => r.ActiveRide))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Accepted();
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+            }
+            return NotFound();
+
+        }
+        public async Task<IActionResult> DeactivateRide(RiderRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+
+            var riderToUpdate = await _context.Riders.SingleOrDefaultAsync(r => r.ID == RequestData.RequestingId);
+
+            if (await TryUpdateModelAsync<Rider>(
+                riderToUpdate,
+                "",
+                 r => -1))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Accepted();
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+            }
+            return NotFound();
+        }
+
+        public IActionResult GetActiveRide(RiderRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+            Rider rider = _service.GetRider(RequestData);
+            if (rider != null)
+                return Ok(rider.ActiveRide);
+
+            return NotFound();
+        }
+
         // GET: Riders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -438,16 +452,15 @@ namespace SouthChandlerCycling.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteRider(RiderRequestData RequestData)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRider([FromBody] RiderRequestData RequestData)
         {
             if (RequestData.RequestingId == RequestData.TargetId)
             {
-                if (!IsAuthorizedRider(RequestData))
+                if (!_service.IsAuthorizedRider(RequestData))
                     return Unauthorized();
             }
-            else if (!IsAuthorizedAdmin(RequestData))
+            else if (!_service.IsAuthorizedAdmin(RequestData))
             {
                 return Unauthorized();
             }
@@ -462,73 +475,7 @@ namespace SouthChandlerCycling.Controllers
             // Do the delete...
             _context.Riders.Remove(rider);
             await _context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
             return Accepted();
-        }
-
-
-        private bool RiderExists(long id)
-        {
-            return _context.Riders.Any(e => e.ID == id);
-        }
-
-        private bool UserNameExists(string Username)
-        {
-            Rider foundRider = _context.Riders.SingleOrDefault<Rider>(r => r.UserName == Username);
-            if (foundRider != null)
-                return true;
-            else
-               return false;
-        }
-
-        public bool IsAuthorizedRider(RiderRequestData RequestData)
-        {
-            bool result = false;
-            if (RiderExists(RequestData.RequestingId))
-            {
-                if (Auth.IsValidToken(RequestData.Authorization)) {
-                    var foundRider = _context.Riders.SingleOrDefaultAsync(m => m.ID == RequestData.RequestingId && RequestData.Authorization == Auth.GenerateJWT(m));
-                    if (foundRider != null)
-                    {
-                        result = true;
-                    }
-                }
-            }
-            return result;
-        }
-        public bool IsAuthorizedRider(RiderLocation RequestData)
-        {
-            bool result = false;
-            if (RiderExists(RequestData.RiderId))
-            {
-                if (Auth.IsValidToken(RequestData.Authorization))
-                {
-                    var foundRider = _context.Riders.SingleOrDefaultAsync(m => m.ID == RequestData.RiderId && RequestData.Authorization == Auth.GenerateJWT(m));
-                    if (foundRider != null)
-                    {
-                        result = true;
-                    }
-                }
-            }
-            return result;
-        }
-        public bool IsAuthorizedAdmin(RiderRequestData RequestData)
-        {
-            bool result = false;
-            if (RiderExists(RequestData.RequestingId))
-            {
-                if (Auth.IsValidToken(RequestData.Authorization))
-                {
-                    var foundRider = _context.Riders.SingleOrDefaultAsync(m => m.ID == RequestData.RequestingId && 
-                    m.Role == "Admin" &&
-                    RequestData.Authorization == Auth.GenerateJWT(m));
-                    if (foundRider != null)
-                    {
-                        result = true;
-                    }
-                }
-            }
-            return result;
         }
     }
 }
