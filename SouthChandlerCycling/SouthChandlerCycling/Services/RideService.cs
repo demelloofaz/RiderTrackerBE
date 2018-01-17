@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SouthChandlerCycling.Services
 {
-    public class RideService
+    public class RideService : IRideService
     {
         private readonly SCCDataContext _context;
 
@@ -25,6 +25,7 @@ namespace SouthChandlerCycling.Services
             ride.Description = RequestData.Description;
             ride.Distance = RequestData.Distance;
             ride.StartDate = RequestData.RideStart;
+            ride.CreatorId = RequestData.RiderId;
             _context.Add(ride);
             _context.SaveChanges();
         }
@@ -62,6 +63,40 @@ namespace SouthChandlerCycling.Services
                         string userAuth = Auth.GenerateJWT(foundRider);
                         if (RequestData.Authorization == userAuth)
                             result = true;
+                    }
+                }
+            }
+            return result;
+        }
+        public bool IsAuthorizedToEdit(RidesRequestData RequestData)
+        {
+            bool result = false;
+            if (!RideExists(RequestData.RideId))
+                return result;
+
+            Ride ride = _context.Rides.SingleOrDefault(m => m.ID == RequestData.RideId);
+
+            if (RiderExists(RequestData.RiderId))
+            {
+                if (Auth.IsValidToken(RequestData.Authorization))
+                {
+                    Rider foundRider = _context.Riders.SingleOrDefault(m => m.ID == RequestData.RiderId);
+                    if (foundRider != null)
+                    {
+                        string userAuth = Auth.GenerateJWT(foundRider);
+                        if (RequestData.Authorization == userAuth)
+                        {
+                            // A rider is allowed to edit a ride if 
+                            // the rider creted the ride or the rider is an admin
+                            if (foundRider.Role=="Admin")
+                                result = true;
+                            else
+                            {
+                                // get the ride and then see if the created id 
+                                if (RequestData.RiderId == ride.CreatorId)
+                                    result = true;
+                            }
+                        }
                     }
                 }
             }

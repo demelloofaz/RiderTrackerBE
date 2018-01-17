@@ -11,9 +11,10 @@ using System;
 namespace SouthChandlerCycling.Migrations
 {
     [DbContext(typeof(SCCDataContext))]
-    partial class SCCDataContextModelSnapshot : ModelSnapshot
+    [Migration("20180105033145_ridesChanged")]
+    partial class ridesChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

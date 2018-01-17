@@ -15,9 +15,9 @@ namespace SouthChandlerCycling.Controllers
     {
        
         private readonly SCCDataContext _context;
-        private RiderService _service;
+        private IRiderService _service;
 
-        public RidersController(SCCDataContext context, RiderService service)
+        public RidersController(SCCDataContext context, IRiderService service)
         {
             _context = context;
             _service = service;
@@ -105,6 +105,7 @@ namespace SouthChandlerCycling.Controllers
         }
 
         // Secure Details Request...
+        [HttpGet]
         public IActionResult GetRider(RiderRequestData RequestData)
         {
             if (!_service.IsAuthorizedRider(RequestData))
@@ -151,11 +152,11 @@ namespace SouthChandlerCycling.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateRider([FromBody] Rider rider)
+        public IActionResult Register([FromBody] Rider rider)
         {
             try
             {
-                if (ModelState.IsValid)
+                //if (ModelState.IsValid)
                 {
                     if (_service.UserNameExists(rider.UserName))
                         return Unauthorized();
@@ -176,7 +177,7 @@ namespace SouthChandlerCycling.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login([FromBody] User user)
+        public IActionResult Login([FromBody] LoginRequestData user)
         {
             User foundUser = _context.Riders.SingleOrDefault<Rider>(
                 r => r.UserName == user.UserName && r.Password == Auth.Hash(user.Password, r.Salt)
@@ -186,6 +187,9 @@ namespace SouthChandlerCycling.Controllers
                 AuthorizationResponseData ResponseData = new AuthorizationResponseData();
                 ResponseData.UserId = foundUser.ID;
                 ResponseData.Authorization = Auth.GenerateJWT(foundUser);
+                ResponseData.FirstName = foundUser.FirstName;
+                ResponseData.UserName = foundUser.UserName;
+                ResponseData.Role = foundUser.Role;
                 return Ok(ResponseData);
             }
    
@@ -193,14 +197,24 @@ namespace SouthChandlerCycling.Controllers
         }
 
         [HttpPost]
-        public IActionResult ChangePassword([FromBody] Rider rider)
+        public IActionResult ChangePassword([FromBody] ChangePasswordRequest RequestData)
         {
+            if (RequestData.RequestingId == RequestData.TargetId)
+            {
+                if (!_service.IsAuthorizedRider(RequestData.TargetId, RequestData.Authorization))
+                    return Unauthorized();
+            }
+            else if (!_service.IsAuthorizedAdmin(RequestData.RequestingId, RequestData.Authorization))
+            {
+                return Unauthorized();
+            }
+
             Rider foundRider = _context.Riders.SingleOrDefault<Rider>(
-                r => r.UserName == rider.UserName && r.ID == rider.ID );
+                r =>  r.ID == RequestData.TargetId );
 
             if (foundRider != null)
             {
-                AuthorizationResponseData ResponseData = _service.UpdatePassword(foundRider, rider.Password);
+                AuthorizationResponseData ResponseData = _service.UpdatePassword(foundRider, RequestData.Password);
                 return Ok(ResponseData);
             }
 
@@ -256,38 +270,25 @@ namespace SouthChandlerCycling.Controllers
             return View(riderToUpdate);
         }
         [HttpPost]
-        public async Task<IActionResult> EditRider( [FromBody] RiderRequestData RequestData)
+        public IActionResult EditRider([FromBody] UpdateRiderRequestData RequestData)
         {
 
             if (RequestData.RequestingId == RequestData.TargetId)
             {
-                if (!_service.IsAuthorizedRider(RequestData))
+                if (!_service.IsAuthorizedRider(RequestData.TargetId, RequestData.Authorization))
                     return Unauthorized();
             }
-            else if (!_service.IsAuthorizedAdmin(RequestData))
+            else if (!_service.IsAuthorizedAdmin(RequestData.RequestingId, RequestData.Authorization))
             {
                 return Unauthorized();
             }
 
-            var riderToUpdate = await _context.Riders.SingleOrDefaultAsync(r => r.ID == RequestData.TargetId);
+            var riderToUpdate = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
 
-            if (await TryUpdateModelAsync<Rider>(
-                riderToUpdate,
-                "",
-                r => r.FirstName, r => r.LastName, r => r.PhoneNumber, r => r.EmailAddress, r => r.Role))
+            if (riderToUpdate != null)
             {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return Accepted();
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
+                AuthorizationResponseData ResponseData = _service.UpdateRiderProfile(riderToUpdate, RequestData);
+                return Ok(ResponseData);
             }
             return NotFound();
         }

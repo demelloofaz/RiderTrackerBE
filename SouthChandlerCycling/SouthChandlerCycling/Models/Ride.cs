@@ -25,6 +25,9 @@ namespace SouthChandlerCycling.Models
         [Column("Distance")]
         [Display(Name = "Distance in Miles")]
         public double Distance { get; set; }
+        [Column("Creator")]
+        [Display(Name = "Creator")]
+        public int CreatorId { get; set; }
 
         public ICollection<Signup> Signups { get; set; }
         //public ICollection<Rider> RideLeader { get; set; }

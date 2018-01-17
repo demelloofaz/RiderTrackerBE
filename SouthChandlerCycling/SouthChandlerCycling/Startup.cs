@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SouthChandlerCycling.Data;
 using Microsoft.EntityFrameworkCore;
+using SouthChandlerCycling.Services;
 
 namespace SouthChandlerCycling
 {
@@ -25,8 +26,20 @@ namespace SouthChandlerCycling
         {
             services.AddDbContext<SCCDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddCors();
+            services.AddCors(options => options.AddPolicy("Cors",
+                builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                }
+            ));
+
             services.AddMvc();
+
+            services.AddScoped<IRiderService, RiderService>();
+            services.AddScoped<IRideService, RideService>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -41,6 +54,8 @@ namespace SouthChandlerCycling
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseCors("Cors");
 
             app.UseStaticFiles();
 
