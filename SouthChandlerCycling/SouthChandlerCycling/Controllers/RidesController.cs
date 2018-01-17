@@ -14,9 +14,9 @@ namespace SouthChandlerCycling.Controllers
     public class RidesController : Controller
     {
         private readonly SCCDataContext _context;
-        private RideService _service;
+        private IRideService _service;
 
-        public RidesController(SCCDataContext context, RideService service)
+        public RidesController(SCCDataContext context, IRideService service)
         { 
             _context = context;
             _service = service;
@@ -145,6 +145,7 @@ namespace SouthChandlerCycling.Controllers
         {
             if (ModelState.IsValid)
             {
+                ride.CreatorId = 0;
                 _context.Add(ride);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -184,7 +185,7 @@ namespace SouthChandlerCycling.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRide([FromBody] RidesRequestData RequestData)
         {
-            if (!_service.IsAuthorizedAdmin(RequestData))
+            if (!_service.IsAuthorizedToEdit(RequestData))
                 return Unauthorized();
 
             var ride = await _context.Rides.SingleOrDefaultAsync(m => m.ID == RequestData.RideId);
@@ -335,7 +336,7 @@ namespace SouthChandlerCycling.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteRide([FromBody] RidesRequestData RequestData)
         {
-            if (!_service.IsAuthorizedAdmin(RequestData))
+            if (!_service.IsAuthorizedToEdit(RequestData))
             {
                 return Unauthorized();
             }

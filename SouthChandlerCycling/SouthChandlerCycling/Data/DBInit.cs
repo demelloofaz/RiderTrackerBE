@@ -46,8 +46,8 @@ namespace SouthChandlerCycling.Data
 
             var rides = new Ride[]
             {
-                new Ride{RideName="Red Mountain/Las Sendas", Description="Hilly Ride Thru Las Sendas Area", Distance = 50.3, StartDate=DateTime.Parse("2017-12-23T07:30:00.0") },
-                new Ride{RideName="Beginner Ride", Description="Easy flat ride", Distance = 26.1, StartDate=DateTime.Parse("2017-12-23T07:30:00.0") }
+                new Ride{RideName="Red Mountain/Las Sendas", Description="Hilly Ride Thru Las Sendas Area", Distance = 50.3, StartDate=DateTime.Parse("2017-12-23T07:30:00.0"), CreatorId = 0 },
+                new Ride{RideName="Beginner Ride", Description="Easy flat ride", Distance = 26.1, StartDate=DateTime.Parse("2017-12-23T07:30:00.0"), CreatorId = 0 }
             };
 
             foreach (Ride r in rides)
