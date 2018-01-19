@@ -121,5 +121,15 @@ namespace SouthChandlerCycling.Services
             }
             return result;
         }
+        public void UpdateRide(Ride rideToUpdate, RidesRequestData RequestData)
+        {
+            rideToUpdate.RideName = RequestData.RideName;
+            rideToUpdate.Description = RequestData.Description;
+            rideToUpdate.Distance = RequestData.Distance;
+            rideToUpdate.StartDate = RequestData.RideStart;
+
+            _context.Rides.Update(rideToUpdate);
+            _context.SaveChanges();
+        }
     }
 }

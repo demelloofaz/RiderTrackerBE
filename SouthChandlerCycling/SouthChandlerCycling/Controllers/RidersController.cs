@@ -457,7 +457,7 @@ namespace SouthChandlerCycling.Controllers
             // Do the delete...
             _context.Riders.Remove(rider);
             await _context.SaveChangesAsync();
-            return Accepted();
+            return Ok();
         }
     }
 }

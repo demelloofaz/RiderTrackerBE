@@ -183,34 +183,24 @@ namespace SouthChandlerCycling.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditRide([FromBody] RidesRequestData RequestData)
+        public IActionResult EditRide([FromBody] RidesRequestData RequestData)
         {
             if (!_service.IsAuthorizedToEdit(RequestData))
                 return Unauthorized();
 
-            var ride = await _context.Rides.SingleOrDefaultAsync(m => m.ID == RequestData.RideId);
+            var rideToUpdate =  _context.Rides.SingleOrDefault(m => m.ID == RequestData.RideId);
 
-            if (ride == null)
-            {
-                return NotFound();
-            }
-
-            if (await TryUpdateModelAsync<Ride>(
-                ride,
-                "",
-                r => r.RideName, r => r.Description, r => r.StartDate, r => r.Distance))
+            if (rideToUpdate != null)
             {
                 try
                 {
-                    await _context.SaveChangesAsync();
-                    return Accepted();
+                    _service.UpdateRide(rideToUpdate, RequestData);
+                    return Ok();
                 }
+
                 catch (DbUpdateException /* ex */)
                 {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
+                    return NotFound();
                 }
             }
             return NotFound();
@@ -352,7 +342,7 @@ namespace SouthChandlerCycling.Controllers
             _context.Rides.Remove(ride);
             await _context.SaveChangesAsync();
             //return RedirectToAction(nameof(Index));
-            return Accepted();
+            return Ok();
         }
 
     }
