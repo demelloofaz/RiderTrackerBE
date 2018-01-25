@@ -1,0 +1,30 @@
+﻿@model SouthChandlerCycling.Models.Signup
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Signup</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ActualRide)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ActualRide.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ActualRider)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ActualRider.EmailAddress)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.SignupID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

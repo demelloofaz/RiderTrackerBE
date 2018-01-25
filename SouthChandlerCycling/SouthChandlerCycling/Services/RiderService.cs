@@ -183,5 +183,34 @@ namespace SouthChandlerCycling.Services
             }
             return result;
         }
+
+        public bool IsAuthorizedRiderOrAdmin(RiderRequestData RequestData)
+        {
+            return this.IsAuthorizedRiderOrAdmin(
+                RequestData.RequestingId,
+                RequestData.TargetId,
+                RequestData.Authorization
+                );
+        }
+
+        public bool IsAuthorizedRiderOrAdmin(int RequestingId, int TargetId, string Authorization)
+        { 
+            bool result = true;
+            if (RequestingId == TargetId)
+            {
+                if (!this.IsAuthorizedRider(RequestingId, Authorization))
+                {
+                    result = false;
+                }
+            }
+            else
+            {
+                if (!this.IsAuthorizedAdmin(RequestingId, Authorization))
+                {
+                    result = false;
+                }
+            }
+            return result;
+        }
     }
 }

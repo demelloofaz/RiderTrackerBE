@@ -40,45 +40,6 @@
         <dd>
             @Html.DisplayFor(model => model.CreatorId)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Signups)
-        </dt>
-        <dd>
-            <table class="table">
-                <tr>
-                    <th>Rider</th>
-                    <th>User Name</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Longitude</th>
-                    <th>Latitude</th>
-                </tr>
-                @foreach (var item in Model.Signups)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRider.FullName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRider.UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRider.PhoneNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRider.EmailAddress)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRider.LastLongitude)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRider.LastLatitude)
-                        </td>
-                    </tr>
-                }
-            </table>
-        </dd>
     </dl>
 </div>
 <div>

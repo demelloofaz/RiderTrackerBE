@@ -18,7 +18,7 @@ namespace SouthChandlerCycling.Services
             _context = context;
         }
 
-        public void AddRide(RidesRequestData RequestData)
+        public Ride AddRide(RidesRequestData RequestData)
         {
             Ride ride = new Ride();
             ride.RideName = RequestData.RideName;
@@ -28,6 +28,7 @@ namespace SouthChandlerCycling.Services
             ride.CreatorId = RequestData.RiderId;
             _context.Add(ride);
             _context.SaveChanges();
+            return ride;
         }
 
        public Ride GetRide(RidesRequestData RequestData)
