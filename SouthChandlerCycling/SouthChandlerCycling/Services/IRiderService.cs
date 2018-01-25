@@ -12,6 +12,8 @@ namespace SouthChandlerCycling.Services
         bool IsAuthorizedAdmin(RiderRequestData RequestData);
         bool IsAuthorizedRider(int RiderId, string Authorization);
         bool IsAuthorizedRider(RiderRequestData RequestData);
+        bool IsAuthorizedRiderOrAdmin(int RequestingId, int TargetId, string Authorization);
+        bool IsAuthorizedRiderOrAdmin(RiderRequestData RequestData);
         bool RiderExists(long id);
         AuthorizationResponseData UpdatePassword(Rider rider, string NewPassword);
         void UpdateRiderPosition(Rider rider, RiderLocation LocationData);

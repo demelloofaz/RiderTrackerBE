@@ -11,7 +11,7 @@ namespace SouthChandlerCycling.Models
         public int RideID { get; set; }
         public int RiderID { get; set; }
 
-        public Ride ActualRide { get; set; }
-        public Rider ActualRider { get; set; }
+        //public Ride ActualRide { get; set; }
+        //public Rider ActualRider { get; set; }
     }
 }

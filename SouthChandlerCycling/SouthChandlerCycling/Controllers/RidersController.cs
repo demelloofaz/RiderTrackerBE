@@ -93,7 +93,7 @@ namespace SouthChandlerCycling.Controllers
             }
             var rider = await _context.Riders             
                 .Include(s => s.Signups)
-                    .ThenInclude(e => e.ActualRide)
+                    //.ThenInclude(e => e.ActualRide)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (rider == null)
@@ -199,15 +199,12 @@ namespace SouthChandlerCycling.Controllers
         [HttpPost]
         public IActionResult ChangePassword([FromBody] ChangePasswordRequest RequestData)
         {
-            if (RequestData.RequestingId == RequestData.TargetId)
-            {
-                if (!_service.IsAuthorizedRider(RequestData.TargetId, RequestData.Authorization))
-                    return Unauthorized();
-            }
-            else if (!_service.IsAuthorizedAdmin(RequestData.RequestingId, RequestData.Authorization))
-            {
+            if (!_service.IsAuthorizedRiderOrAdmin(
+                RequestData.RequestingId,
+                RequestData.TargetId,
+                RequestData.Authorization))
                 return Unauthorized();
-            }
+
 
             Rider foundRider = _context.Riders.SingleOrDefault<Rider>(
                 r =>  r.ID == RequestData.TargetId );
@@ -272,16 +269,11 @@ namespace SouthChandlerCycling.Controllers
         [HttpPost]
         public IActionResult EditRider([FromBody] UpdateRiderRequestData RequestData)
         {
-
-            if (RequestData.RequestingId == RequestData.TargetId)
-            {
-                if (!_service.IsAuthorizedRider(RequestData.TargetId, RequestData.Authorization))
-                    return Unauthorized();
-            }
-            else if (!_service.IsAuthorizedAdmin(RequestData.RequestingId, RequestData.Authorization))
-            {
+            if (!_service.IsAuthorizedRiderOrAdmin(
+                    RequestData.RequestingId,
+                    RequestData.TargetId,
+                    RequestData.Authorization))
                 return Unauthorized();
-            }
 
             var riderToUpdate = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
 
@@ -324,21 +316,8 @@ namespace SouthChandlerCycling.Controllers
         public IActionResult GetRiderPosition(RiderRequestData RequestData)
         {
  
-
-            if (RequestData.RequestingId == RequestData.TargetId)
-            {
-                if (!_service.IsAuthorizedRider(RequestData))
-                {
-                    return Unauthorized();
-                }
-            }
-            else
-            {
-               if (_service.IsAuthorizedAdmin(RequestData))
-                {
-                    return Unauthorized();
-                }
-            }
+            if (!_service.IsAuthorizedRiderOrAdmin(RequestData))
+                return Unauthorized();
 
             Rider riderToGet = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
 
@@ -437,15 +416,8 @@ namespace SouthChandlerCycling.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteRider([FromBody] RiderRequestData RequestData)
         {
-            if (RequestData.RequestingId == RequestData.TargetId)
-            {
-                if (!_service.IsAuthorizedRider(RequestData))
-                    return Unauthorized();
-            }
-            else if (!_service.IsAuthorizedAdmin(RequestData))
-            {
+            if (!_service.IsAuthorizedRiderOrAdmin(RequestData))
                 return Unauthorized();
-            }
 
             var rider = await _context.Riders.SingleOrDefaultAsync(m => m.ID == RequestData.TargetId);
 

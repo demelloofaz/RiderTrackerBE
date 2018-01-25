@@ -84,32 +84,6 @@
         <dd>
             @Html.DisplayFor(model => model.LastRide)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Signups)
-        </dt>
-        <dd>
-            <table class="table">
-                <tr>
-                    <th>Ride</th>
-                    <th>Date</th>
-                    <th>Distance</th>
-                </tr>
-                @foreach (var item in Model.Signups)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRide.RideName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRide.StartDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ActualRide.Distance)
-                        </td>
-                    </tr>
-                }
-            </table>
-        </dd>
     </dl>
 </div>
 <div>

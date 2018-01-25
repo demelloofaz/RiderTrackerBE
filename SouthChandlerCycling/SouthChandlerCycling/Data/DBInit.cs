@@ -46,8 +46,11 @@ namespace SouthChandlerCycling.Data
 
             var rides = new Ride[]
             {
+                new Ride{RideName="Test", Description="Test", Distance = 10.3, StartDate=DateTime.Parse("2017-12-23T07:30:00.0"), CreatorId = 0 },
+
+                new Ride{RideName="Beginner Ride", Description="Easy flat ride", Distance = 26.1, StartDate=DateTime.Parse("2017-12-23T07:30:00.0"), CreatorId = 0 },
+
                 new Ride{RideName="Red Mountain/Las Sendas", Description="Hilly Ride Thru Las Sendas Area", Distance = 50.3, StartDate=DateTime.Parse("2017-12-23T07:30:00.0"), CreatorId = 0 },
-                new Ride{RideName="Beginner Ride", Description="Easy flat ride", Distance = 26.1, StartDate=DateTime.Parse("2017-12-23T07:30:00.0"), CreatorId = 0 }
             };
 
             foreach (Ride r in rides)
@@ -58,11 +61,11 @@ namespace SouthChandlerCycling.Data
 
             var signUps = new Signup[]
             {
-                new Signup{RiderID = 2, RideID=1},
-                new Signup{RiderID = 3, RideID=1},
-                new Signup{RiderID = 4, RideID=1},
-                new Signup{RiderID = 5, RideID=1},
-                new Signup{RiderID = 7, RideID=1},
+                new Signup{RiderID = 2, RideID=3},
+                new Signup{RiderID = 3, RideID=3},
+                new Signup{RiderID = 4, RideID=3},
+                new Signup{RiderID = 5, RideID=3},
+                new Signup{RiderID = 7, RideID=3},
                 new Signup{RiderID = 3, RideID=2},
                 new Signup{RiderID = 5, RideID=2},
                 new Signup{RiderID = 6, RideID=2}

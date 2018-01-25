@@ -119,7 +119,7 @@ namespace SouthChandlerCycling.Controllers
 
             var ride = await _context.Rides
                             .Include(s => s.Signups)
-                                .ThenInclude(e => e.ActualRider)
+                                //.ThenInclude(e => e.ActualRider)
                             .AsNoTracking()
                             .SingleOrDefaultAsync(m => m.ID == id);
             if (ride == null)
@@ -155,13 +155,15 @@ namespace SouthChandlerCycling.Controllers
         [HttpPost]
         public IActionResult CreateRide([FromBody] RidesRequestData RequestData)
         {
-            if (!_service.IsAuthorizedAdmin(RequestData))
+            if (!_service.IsAuthorizedRider(RequestData))
                 return Unauthorized();
 
             if (ModelState.IsValid)
             {
-                _service.AddRide(RequestData);
-                return Accepted();
+                // convert time back to local time,
+                RequestData.RideStart = TimeZoneInfo.ConvertTimeFromUtc(RequestData.RideStart, TimeZoneInfo.Local);
+                var ride = _service.AddRide(RequestData);
+                return Accepted(ride);
             }
             return Unauthorized();
         }
