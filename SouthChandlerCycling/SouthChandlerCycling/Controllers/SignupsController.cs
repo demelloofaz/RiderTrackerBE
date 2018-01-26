@@ -39,8 +39,8 @@ namespace SouthChandlerCycling.Controllers
             }
 
             var signup = await _context.SignUps
-                //.Include(s => s.ActualRide)
-                //.Include(s => s.ActualRider)
+                .Include(s => s.ActualRide)
+                .Include(s => s.ActualRider)
                 .SingleOrDefaultAsync(m => m.SignupID == id);
             if (signup == null)
             {
@@ -141,8 +141,8 @@ namespace SouthChandlerCycling.Controllers
             }
 
             var signup = await _context.SignUps
-                //.Include(s => s.ActualRide)
-                //.Include(s => s.ActualRider)
+                .Include(s => s.ActualRide)
+                .Include(s => s.ActualRider)
                 .SingleOrDefaultAsync(m => m.SignupID == id);
             if (signup == null)
             {
@@ -221,6 +221,7 @@ namespace SouthChandlerCycling.Controllers
             }
             return Ok(_context.SignUps.Where(signup => signup.RideID == RequestData.RideId).ToList());
         }
+
         [HttpGet]
         public IActionResult GetRideAttendees(SignupRequestData RequestData)
         {
@@ -228,7 +229,33 @@ namespace SouthChandlerCycling.Controllers
             {
                 return Unauthorized();
             }
-            return Ok(_context.SignUps.Where(signup => signup.RideID == RequestData.RideId).ToList());
+            return Ok(_context.SignUps.Where(signup => signup.RideID == RequestData.RideId)
+                .Select(x => new AttendeeInfo {
+                    RiderId = x.ActualRider.ID,
+                    FullName = x.ActualRider.FullName,
+                    UserName = x.ActualRider.UserName })
+                 .OrderByDescending(x => x.FullName)
+                .ToList());
+        }
+
+        [HttpGet]
+        public IActionResult GetRideAttendeesPositions(SignupRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+            return Ok(_context.SignUps.Where(signup => signup.RideID == RequestData.RideId)
+                .Select(x => new AttendeePositionInfo
+                {
+                    RiderId = x.ActualRider.ID,
+                    FullName = x.ActualRider.FullName,
+                    UserName = x.ActualRider.UserName,
+                    Longitude = x.ActualRider.LastLongitude,
+                    Latitude = x.ActualRider.LastLatitude
+                })
+                 .OrderByDescending(x => x.FullName)
+                .ToList());
         }
 
         [HttpGet]

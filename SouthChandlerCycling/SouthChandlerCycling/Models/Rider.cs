@@ -19,7 +19,7 @@ namespace SouthChandlerCycling.Models
 
 
         //public ICollection<Bicycle> bicycles { get; set; }
-        public ICollection<Signup> Signups { get; set; }
+        //public ICollection<Signup> Signups { get; set; }
         // This is a collection of followers.  Some are ride buddies
         // and some are emergency contacts...
         //public ICollection<Buddy> Buddies { get; set; }
