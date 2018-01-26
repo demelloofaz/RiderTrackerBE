@@ -29,7 +29,7 @@ namespace SouthChandlerCycling.Models
         [Display(Name = "Creator")]
         public int CreatorId { get; set; }
 
-        public ICollection<Signup> Signups { get; set; }
+        //public ICollection<Signup> Signups { get; set; }
         //public ICollection<Rider> RideLeader { get; set; }
     }
 }

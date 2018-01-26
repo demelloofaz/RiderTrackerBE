@@ -118,8 +118,8 @@ namespace SouthChandlerCycling.Controllers
             }
 
             var ride = await _context.Rides
-                            .Include(s => s.Signups)
-                                //.ThenInclude(e => e.ActualRider)
+                            //.Include(s => s.Signups)
+                            //.ThenInclude(e => e.ActualRider)
                             .AsNoTracking()
                             .SingleOrDefaultAsync(m => m.ID == id);
             if (ride == null)

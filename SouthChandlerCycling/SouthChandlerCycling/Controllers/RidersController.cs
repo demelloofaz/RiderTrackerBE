@@ -92,7 +92,7 @@ namespace SouthChandlerCycling.Controllers
                 return NotFound();
             }
             var rider = await _context.Riders             
-                .Include(s => s.Signups)
+                //.Include(s => s.Signups)
                     //.ThenInclude(e => e.ActualRide)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);

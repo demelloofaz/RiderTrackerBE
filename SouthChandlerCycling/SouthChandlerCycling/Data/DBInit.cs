@@ -58,7 +58,9 @@ namespace SouthChandlerCycling.Data
                 context.Rides.Add(r);
             }
             context.SaveChanges();
-
+            /*
+             * no Signups  will do in the actual front end.
+             * 
             var signUps = new Signup[]
             {
                 new Signup{RiderID = 2, RideID=3},
@@ -75,6 +77,7 @@ namespace SouthChandlerCycling.Data
                 context.SignUps.Add(s);
             }
             context.SaveChanges();
+            */
         }
     }
 }
