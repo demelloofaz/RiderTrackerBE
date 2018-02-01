@@ -50,14 +50,22 @@ namespace SouthChandlerCycling.Services
             ResponseData.Authorization = Auth.GenerateJWT(newRider);
             return ResponseData;
         }
+        public Rider GetRiderByID(int RiderId)
+        {
+            if (RiderId > 0)
+            {
+                Rider rider = _context.Riders.SingleOrDefault(r => r.ID == RiderId);
+                return rider;
+            }
+            return null;
+        }
         public Rider GetRider(RiderRequestData RequestData)
         {
             // Use the defualt Detials method...
             // return await Details(RequestData.TargetId);
             if (RequestData.TargetId > 0)
             {
-                Rider rider = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
-                return rider;
+                return GetRiderByID(RequestData.TargetId);
             }
             return null;
         }
@@ -75,22 +83,24 @@ namespace SouthChandlerCycling.Services
             ResponseData.Authorization = Auth.GenerateJWT(rider);
             return ResponseData;
         }
-        public void UpdateRiderPosition(Rider rider, RiderLocation LocationData)
+        public void UpdateRiderLocation(Rider rider,RiderLocation LocationData)
         {
             rider.LastLatitude = LocationData.Latitude;
             rider.LastLongitude = LocationData.Longitude;
-            rider.ActiveRide = LocationData.RideId;
+            if (LocationData.RideId != 0)
+                rider.ActiveRide = LocationData.RideId;
+            LocationData.FullName = rider.FullName;
+            LocationData.UserName = rider.UserName;
             _context.Riders.Update(rider);
             _context.SaveChanges();
         }
-        public RiderLocation GetRiderLocation(Rider rider)
+        public void GetRiderLocation(Rider rider, RiderLocation LocationData)
         {
-            RiderLocation LocationData = new RiderLocation();
-            LocationData.RiderId = rider.ID;
             LocationData.Longitude = rider.LastLongitude;
             LocationData.Latitude = rider.LastLatitude;
             LocationData.RideId = rider.ActiveRide;
-            return LocationData;
+            LocationData.UserName = rider.UserName;
+            LocationData.FullName = rider.FullName;
         }
         public AuthorizationResponseData UpdateRiderProfile(Rider rider, UpdateRiderRequestData requestData)
         {
