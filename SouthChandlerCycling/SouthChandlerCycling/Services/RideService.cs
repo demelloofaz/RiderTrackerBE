@@ -12,10 +12,12 @@ namespace SouthChandlerCycling.Services
     public class RideService : IRideService
     {
         private readonly SCCDataContext _context;
+        private IRiderService _riderService;
 
-        public RideService(SCCDataContext context)
+        public RideService(SCCDataContext context, IRiderService riderService)
         {
             _context = context;
+            _riderService = riderService;
         }
 
         public Ride AddRide(RidesRequestData RequestData)
@@ -48,11 +50,15 @@ namespace SouthChandlerCycling.Services
 
         private bool RiderExists(long id)
         {
-            return _context.Riders.Any(e => e.ID == id);
+            return _riderService.RiderExists(id);
+            //return _context.Riders.Any(e => e.ID == id);
         }
 
         public bool IsAuthorizedRider(RidesRequestData RequestData)
         {
+            return _riderService.IsAuthorizedRider(RequestData.RiderId, RequestData.Authorization);
+
+            /*
             bool result = false;
             if (RiderExists(RequestData.RiderId))
             {
@@ -68,6 +74,7 @@ namespace SouthChandlerCycling.Services
                 }
             }
             return result;
+            */
         }
         public bool IsAuthorizedToEdit(RidesRequestData RequestData)
         {
@@ -79,6 +86,19 @@ namespace SouthChandlerCycling.Services
 
             if (RiderExists(RequestData.RiderId))
             {
+                // 2 cases either the rider created the ride or the rider
+                // has admin rights.
+                if(RequestData.RiderId == ride.CreatorId)
+                {
+                    if (IsAuthorizedRider(RequestData))
+                        result = true;
+                }
+                else
+                {
+                    if (IsAuthorizedAdmin(RequestData))
+                        result = true;
+                }
+                /*
                 if (Auth.IsValidToken(RequestData.Authorization))
                 {
                     Rider foundRider = _context.Riders.SingleOrDefault(m => m.ID == RequestData.RiderId);
@@ -100,11 +120,14 @@ namespace SouthChandlerCycling.Services
                         }
                     }
                 }
+                */
             }
             return result;
         }
         public bool IsAuthorizedAdmin(RidesRequestData RequestData)
         {
+            return _riderService.IsAuthorizedAdmin(RequestData.RiderId, RequestData.Authorization);
+            /*
             bool result = false;
             if (RiderExists(RequestData.RiderId))
             {
@@ -121,6 +144,7 @@ namespace SouthChandlerCycling.Services
                 }
             }
             return result;
+            */
         }
         public void UpdateRide(Ride rideToUpdate, RidesRequestData RequestData)
         {

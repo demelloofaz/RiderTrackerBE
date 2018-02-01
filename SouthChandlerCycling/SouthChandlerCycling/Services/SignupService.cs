@@ -13,19 +13,25 @@ namespace SouthChandlerCycling.Services
     public class SignupService : ISignupService
     {
         private readonly SCCDataContext _context;
+        private readonly IRiderService _riderService;
+        private readonly IRideService _rideService;
 
-        public SignupService(SCCDataContext context)
+        public SignupService(SCCDataContext context, IRiderService riderService, IRideService rideService)
         {
             _context = context;
+            _riderService = riderService;
+            _rideService = rideService;
         }
         public bool RideExists(int id)
         {
-            return _context.Rides.Any(e => e.ID == id);
+            return _riderService.RiderExists(id);
+            //return _context.Rides.Any(e => e.ID == id);
         }
 
-        public bool RiderExists(int id)
+        public bool RiderExists(long id)
         {
-            return _context.Riders.Any(e => e.ID == id);
+            return _riderService.RiderExists(id);
+            //return _context.Riders.Any(e => e.ID == id);
         }
 
         public bool SignUpExists(int RiderId, int RideId)
@@ -46,7 +52,10 @@ namespace SouthChandlerCycling.Services
             return IsAuthorizedRider(RequestData.RequestingId, RequestData.Authorization);
         }
         public bool IsAuthorizedRider(int RiderId, string Authorization)
-        { 
+        {
+            return _riderService.IsAuthorizedRider(RiderId, Authorization);
+            
+            /*
             bool result = false;
             if (RiderExists(RiderId))
             {
@@ -63,6 +72,7 @@ namespace SouthChandlerCycling.Services
                 }
             }
             return result;
+            */
         }
         public bool IsAuthorizedAdmin(SignupRequestData RequestData)
         {
@@ -70,7 +80,10 @@ namespace SouthChandlerCycling.Services
         }
 
         public bool IsAuthorizedAdmin(int RiderId, string Authorization)
-        { 
+        {
+            return _riderService.IsAuthorizedAdmin(RiderId, Authorization);
+            
+            /*
             bool result = false;
             if (RiderExists(RiderId))
             {
@@ -87,6 +100,7 @@ namespace SouthChandlerCycling.Services
                 }
             }
             return result;
+            */
         }
 
         public bool IsAuthorizedRiderOrAdmin(SignupRequestData RequestData)
@@ -94,7 +108,9 @@ namespace SouthChandlerCycling.Services
             return IsAuthorizedRiderOrAdmin(RequestData.RequestingId, RequestData.RiderId, RequestData.Authorization);
         }
         public bool IsAuthorizedRiderOrAdmin(int RequestingId, int RiderId, string Authorization)
-        { 
+        {
+            return _riderService.IsAuthorizedRiderOrAdmin(RequestingId, RiderId, Authorization);
+            /*
             bool result = true;
             if (RequestingId != RiderId)
             {
@@ -109,6 +125,7 @@ namespace SouthChandlerCycling.Services
             }
 
             return result;
+            */
         }
 
     }

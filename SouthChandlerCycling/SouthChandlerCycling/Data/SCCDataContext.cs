@@ -12,10 +12,7 @@ namespace SouthChandlerCycling.Data
         public DbSet<Rider> Riders { get; set; }
         public DbSet<Ride> Rides { get; set; }
         public DbSet<Signup> SignUps { get; set; }
-        //public DbSet<Rider> ICEContacts { get; set; }
-        //public DbSet<Bicycle> Bicycles { get; set; }
-        //public DbSet<Buddy> Buddies { get; set; }
-        //public DbSet<Person> People { get; set; }
+        public DbSet<Follow> Follows { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

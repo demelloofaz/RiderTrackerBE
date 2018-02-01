@@ -41,6 +41,7 @@ namespace SouthChandlerCycling
             services.AddScoped<IRiderService, RiderService>();
             services.AddScoped<IRideService, RideService>();
             services.AddScoped<ISignupService, SignupService>();
+            services.AddScoped<IFollowService, FollowService>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

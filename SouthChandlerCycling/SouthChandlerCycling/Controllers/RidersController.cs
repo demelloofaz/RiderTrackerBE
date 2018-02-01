@@ -84,6 +84,22 @@ namespace SouthChandlerCycling.Controllers
             }
             return Ok(_context.Riders.ToList());
         }
+        [HttpGet]
+        public IActionResult GetRidersInfo(RiderRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+            return Ok(_context.Riders.Select(
+                x => new RiderDetailInfo {
+                    RiderId = x.ID,
+                    FullName = x.FullName,
+                    UserName = x.UserName
+                    }
+                ).ToList());
+        }
+
         // GET: Riders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -286,19 +302,27 @@ namespace SouthChandlerCycling.Controllers
         }
 
         [HttpPost]
-        public async  Task<IActionResult> UpdateRiderPosition([FromBody] RiderLocation LocationData)
+        public async  Task<IActionResult> UpdateRiderLocation([FromBody] RiderLocation LocationData)
         {
-            if (!_service.IsAuthorizedRider(LocationData.RiderId, LocationData.Authorization))
-            { 
+            if (LocationData.RequestingId == LocationData.RiderId)
+            {
+                if (!_service.IsAuthorizedRider(LocationData.RequestingId, LocationData.Authorization))
+                {
                     return Unauthorized();
+                }
+            }
+            else if (!_service.IsAuthorizedAdmin(LocationData.RequestingId, LocationData.Authorization))
+            {
+                return Unauthorized();
             }
             
-             Rider  riderToUpdate = await _context.Riders.SingleOrDefaultAsync(r => r.ID == LocationData.RiderId);
+            Rider  riderToUpdate = await _context.Riders.SingleOrDefaultAsync(r => r.ID == LocationData.RiderId);
             try
             {
                 if (riderToUpdate != null)
                 {
-                    _service.UpdateRiderPosition(riderToUpdate, LocationData);
+                    _service.UpdateRiderLocation(riderToUpdate, LocationData);
+                    return Ok(LocationData);
                 }
             }
 
@@ -310,20 +334,21 @@ namespace SouthChandlerCycling.Controllers
                         "Try again, and if the problem persists, " +
                         "see your system administrator.");
             }
-            return Accepted();
+            return NotFound();
         }
         [HttpGet]
-        public IActionResult GetRiderPosition(RiderRequestData RequestData)
+        public IActionResult GetRiderLocation(RiderLocation LocationData)
         {
- 
-            if (!_service.IsAuthorizedRiderOrAdmin(RequestData))
+            if (!_service.IsAuthorizedRider(LocationData.RequestingId, LocationData.Authorization))
+            {
                 return Unauthorized();
+            }
 
-            Rider riderToGet = _context.Riders.SingleOrDefault(r => r.ID == RequestData.TargetId);
+            Rider riderToGet = _context.Riders.SingleOrDefault(r => r.ID  == LocationData.RiderId);
 
             if (riderToGet != null)
             {
-                RiderLocation LocationData = _service.GetRiderLocation(riderToGet);
+                _service.GetRiderLocation(riderToGet, LocationData);
                 return Ok(LocationData);
 
             }
