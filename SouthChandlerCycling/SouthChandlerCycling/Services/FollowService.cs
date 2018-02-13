@@ -34,7 +34,7 @@ namespace SouthChandlerCycling.Services
             Follow f = new Follow();
             f.FollowingID = RequestData.FollowingId;
             f.FollowerID = RequestData.FollowerId;
-            f.FollowState = FollowStateType.FollowAllowed;
+            f.FollowState = FollowStateType.FollowRequested;
 
             // Set up  the actual follow data
             //f.FollowerRider = _riderService.GetRiderByID(f.FollowerID);

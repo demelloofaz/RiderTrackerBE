@@ -1,0 +1,10 @@
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\bin\Release\netcoreapp2.0\SouthChandlerCycling.deps.json
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\bin\Release\netcoreapp2.0\SouthChandlerCycling.runtimeconfig.json
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\bin\Release\netcoreapp2.0\SouthChandlerCycling.runtimeconfig.dev.json
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\bin\Release\netcoreapp2.0\SouthChandlerCycling.dll
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\bin\Release\netcoreapp2.0\SouthChandlerCycling.pdb
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.csproj.CoreCompileInputs.cache
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.AssemblyInfoInputs.cache
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.AssemblyInfo.cs
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.dll
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.pdb
