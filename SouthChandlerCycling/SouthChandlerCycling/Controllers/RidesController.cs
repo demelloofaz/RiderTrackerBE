@@ -91,6 +91,36 @@ namespace SouthChandlerCycling.Controllers
             }
             return Ok(_context.Rides.ToList());
         }
+        [HttpGet]
+        public IActionResult GetTodaysRides(RidesRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+            List<Ride> rides = _service.GetTodaysRides();
+            return Ok(rides);
+        }
+        [HttpGet]
+        public IActionResult GetUpcomingRides(RidesRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+            List<Ride> rides = _service.GetUpcomingRides();
+            return Ok(rides);
+        }
+        [HttpGet]
+        public IActionResult GetPastRides(RidesRequestData RequestData)
+        {
+            if (!_service.IsAuthorizedRider(RequestData))
+            {
+                return Unauthorized();
+            }
+            List<Ride> rides = _service.GetPastRides();
+            return Ok(rides);
+        }
         // Secure Details Request...
         [HttpGet]
         public IActionResult GetRide(RidesRequestData RequestData)

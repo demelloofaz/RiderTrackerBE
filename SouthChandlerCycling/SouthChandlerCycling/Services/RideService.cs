@@ -42,6 +42,34 @@ namespace SouthChandlerCycling.Services
             }
             return null;
         }
+        public List<Ride> GetUpcomingRides()
+        {
+            DateTime startDate = DateTime.Now.Date;
+
+            return _context.Rides.
+                Where(r => r.StartDate >= startDate )
+                 .OrderBy(r => r.StartDate)
+                 .ToList();
+        }
+        public List<Ride> GetPastRides()
+        {
+            DateTime startDate = DateTime.Now.Date;
+
+            return _context.Rides.
+                Where(r => r.StartDate < startDate)
+                .OrderBy(r => r.StartDate)
+                .ToList();
+        }
+        public List<Ride> GetTodaysRides()
+        {
+            DateTime startDate = DateTime.Now.Date;
+            DateTime endDate = startDate.AddDays(1).AddTicks(-1);
+
+            return _context.Rides.
+                Where(r => r.StartDate >= startDate && r.StartDate <= endDate)
+                 .OrderBy(r => r.StartDate)
+                 .ToList();
+        }
 
         private bool RideExists(int id)
         {
@@ -51,30 +79,11 @@ namespace SouthChandlerCycling.Services
         private bool RiderExists(long id)
         {
             return _riderService.RiderExists(id);
-            //return _context.Riders.Any(e => e.ID == id);
         }
 
         public bool IsAuthorizedRider(RidesRequestData RequestData)
         {
             return _riderService.IsAuthorizedRider(RequestData.RiderId, RequestData.Authorization);
-
-            /*
-            bool result = false;
-            if (RiderExists(RequestData.RiderId))
-            {
-                if (Auth.IsValidToken(RequestData.Authorization))
-                {
-                    Rider foundRider = _context.Riders.SingleOrDefault(m => m.ID == RequestData.RiderId);
-                    if (foundRider != null)
-                    {
-                        string userAuth = Auth.GenerateJWT(foundRider);
-                        if (RequestData.Authorization == userAuth)
-                            result = true;
-                    }
-                }
-            }
-            return result;
-            */
         }
         public bool IsAuthorizedToEdit(RidesRequestData RequestData)
         {
@@ -98,53 +107,12 @@ namespace SouthChandlerCycling.Services
                     if (IsAuthorizedAdmin(RequestData))
                         result = true;
                 }
-                /*
-                if (Auth.IsValidToken(RequestData.Authorization))
-                {
-                    Rider foundRider = _context.Riders.SingleOrDefault(m => m.ID == RequestData.RiderId);
-                    if (foundRider != null)
-                    {
-                        string userAuth = Auth.GenerateJWT(foundRider);
-                        if (RequestData.Authorization == userAuth)
-                        {
-                            // A rider is allowed to edit a ride if 
-                            // the rider creted the ride or the rider is an admin
-                            if (foundRider.Role=="Admin")
-                                result = true;
-                            else
-                            {
-                                // get the ride and then see if the created id 
-                                if (RequestData.RiderId == ride.CreatorId)
-                                    result = true;
-                            }
-                        }
-                    }
-                }
-                */
             }
             return result;
         }
         public bool IsAuthorizedAdmin(RidesRequestData RequestData)
         {
             return _riderService.IsAuthorizedAdmin(RequestData.RiderId, RequestData.Authorization);
-            /*
-            bool result = false;
-            if (RiderExists(RequestData.RiderId))
-            {
-                if (Auth.IsValidToken(RequestData.Authorization))
-                {
-                    Rider foundRider = _context.Riders.SingleOrDefault(m => m.ID == RequestData.RiderId);
-                    if (foundRider != null)
-                    {
-                        string userAuth = Auth.GenerateJWT(foundRider);
-                        if ((RequestData.Authorization == userAuth) &&
-                           (foundRider.Role == "Admin"))
-                            result = true;
-                    }
-                }
-            }
-            return result;
-            */
         }
         public void UpdateRide(Ride rideToUpdate, RidesRequestData RequestData)
         {

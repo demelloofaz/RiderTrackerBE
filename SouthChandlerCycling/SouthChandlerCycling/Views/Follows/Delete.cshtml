@@ -12,16 +12,16 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.FollowingId)
+            @Html.DisplayNameFor(model => model.FollowingID)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FollowingId)
+            @Html.DisplayFor(model => model.FollowingID)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.FollowerId)
+            @Html.DisplayNameFor(model => model.FollowerID)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FollowerId)
+            @Html.DisplayFor(model => model.FollowerID)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.FollowState)
@@ -32,7 +32,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="FollowID" />
         <input type="submit" value="Delete" class="btn btn-default" /> |
         <a asp-action="Index">Back to List</a>
     </form>

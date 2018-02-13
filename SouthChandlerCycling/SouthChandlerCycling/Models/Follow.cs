@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 
 namespace SouthChandlerCycling.Models
 {
-    public enum FollowStateType { FollowRequested, FollowAllowed, FollowDeclined, FollowBlocked};
+    public enum FollowStateType { FollowRequested,
+                                  FollowAllowed,
+                                  FollowDeclined,
+                                  FollowBlocked // future
+                                };
 
     public class Follow
     {
