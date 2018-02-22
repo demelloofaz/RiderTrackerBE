@@ -8,3 +8,4 @@ C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\South
 C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.AssemblyInfo.cs
 C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.dll
 C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.pdb
+C:\Users\David\CoderCamps\FinalProject\RiderTrackerBE\SouthChandlerCycling\SouthChandlerCycling\obj\Release\netcoreapp2.0\SouthChandlerCycling.csprojResolveAssemblyReference.cache
