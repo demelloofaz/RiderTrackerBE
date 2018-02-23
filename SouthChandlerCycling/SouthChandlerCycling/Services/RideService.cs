@@ -42,27 +42,37 @@ namespace SouthChandlerCycling.Services
             }
             return null;
         }
-        public List<Ride> GetUpcomingRides()
+        public List<Ride> GetUpcomingRides(RidesRequestData RequestData)
         {
-            DateTime startDate = DateTime.Now.Date;
+            DateTime startDate = new DateTime(
+                        RequestData.TargetYear,
+                        RequestData.TargetMonth,
+                        RequestData.TargetDay);
 
             return _context.Rides.
                 Where(r => r.StartDate >= startDate )
                  .OrderBy(r => r.StartDate)
                  .ToList();
         }
-        public List<Ride> GetPastRides()
+        public List<Ride> GetPastRides(RidesRequestData RequestData)
         {
-            DateTime startDate = DateTime.Now.Date;
+            DateTime startDate = new DateTime(
+                        RequestData.TargetYear,
+                        RequestData.TargetMonth,
+                        RequestData.TargetDay);
 
             return _context.Rides.
                 Where(r => r.StartDate < startDate)
                 .OrderBy(r => r.StartDate)
                 .ToList();
         }
-        public List<Ride> GetTodaysRides()
+        public List<Ride> GetTodaysRides(RidesRequestData RequestData)
         {
-            DateTime startDate = DateTime.Now.Date;
+            DateTime startDate = new DateTime(
+                    RequestData.TargetYear,
+                    RequestData.TargetMonth,
+                    RequestData.TargetDay);
+
             DateTime endDate = startDate.AddDays(1).AddTicks(-1);
 
             return _context.Rides.
