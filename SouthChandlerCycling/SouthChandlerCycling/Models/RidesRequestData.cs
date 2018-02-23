@@ -14,5 +14,8 @@ namespace SouthChandlerCycling.Models
         public string Description { get; set; }
         public DateTime RideStart { get; set; }
         public double Distance { get; set; }
+        public int TargetMonth { get; set; }
+        public int TargetDay { get; set; }
+        public int TargetYear { get; set; }
     }
 }

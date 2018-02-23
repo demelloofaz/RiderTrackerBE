@@ -98,7 +98,7 @@ namespace SouthChandlerCycling.Controllers
             {
                 return Unauthorized();
             }
-            List<Ride> rides = _service.GetTodaysRides();
+            List<Ride> rides = _service.GetTodaysRides(RequestData);
             return Ok(rides);
         }
         [HttpGet]
@@ -108,7 +108,7 @@ namespace SouthChandlerCycling.Controllers
             {
                 return Unauthorized();
             }
-            List<Ride> rides = _service.GetUpcomingRides();
+            List<Ride> rides = _service.GetUpcomingRides(RequestData);
             return Ok(rides);
         }
         [HttpGet]
@@ -118,7 +118,7 @@ namespace SouthChandlerCycling.Controllers
             {
                 return Unauthorized();
             }
-            List<Ride> rides = _service.GetPastRides();
+            List<Ride> rides = _service.GetPastRides(RequestData);
             return Ok(rides);
         }
         // Secure Details Request...
