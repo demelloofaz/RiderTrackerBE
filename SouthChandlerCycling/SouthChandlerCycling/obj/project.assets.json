@@ -13150,9 +13150,6 @@
   },
   "project": {
     "version": "1.0.0",
-    "restoreSettings": {
-      "hideWarningsAndErrors": true
-    },
     "restore": {
       "projectUniqueName": "C:\\Users\\David\\CoderCamps\\FinalProject\\RiderTrackerBE\\SouthChandlerCycling\\SouthChandlerCycling\\SouthChandlerCycling.csproj",
       "projectName": "SouthChandlerCycling",
@@ -13188,6 +13185,19 @@
     "frameworks": {
       "netcoreapp2.0": {
         "dependencies": {
+          "Microsoft.NETCore.App": {
+            "target": "Package",
+            "version": "2.0",
+            "autoReferenced": true
+          },
+          "JWT": {
+            "target": "Package",
+            "version": "3.0.3"
+          },
+          "Microsoft.AspNetCore.All": {
+            "target": "Package",
+            "version": "2.0.3"
+          },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
             "version": "2.0.1"
@@ -13195,19 +13205,6 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
             "version": "2.0.0"
-          },
-          "JWT": {
-            "target": "Package",
-            "version": "3.0.3"
-          },
-          "Microsoft.NETCore.App": {
-            "target": "Package",
-            "version": "2.0",
-            "autoReferenced": true
-          },
-          "Microsoft.AspNetCore.All": {
-            "target": "Package",
-            "version": "2.0.3"
           }
         },
         "imports": [
