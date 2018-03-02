@@ -267,13 +267,7 @@ namespace SouthChandlerCycling.Controllers
             var signUp = _context.SignUps.SingleOrDefault (
                 s => s.RiderID == RequestData.RiderId &&
                      s.RideID == RequestData.RideId);
-
-            if (signUp != null)
-            {
                 return Ok(signUp);
-            }
-
-            return NotFound();
         }
 
         [HttpDelete]
